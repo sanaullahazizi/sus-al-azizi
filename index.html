@@ -91,10 +91,10 @@ function go(t){tab=t;$('nav').classList.remove('open');msg='';draw();scrollTo(0,
 function draw(){$('nv').innerHTML=TABS.map(t=>`<button onclick="go('${t[0]}')">${t[1]}</button>`).join('');
  $('app').innerHTML=({home:H,about:Ab,dict:D,lib:()=>L(),history:()=>L('History'),docs:()=>L('Documentaries'),arakan:()=>L('Arakan Stories'),edu:()=>L('Education')+'<div style="height:16px"></div>'+S(),res:()=>L('Research'),info:I,admin:A})[tab]();
  document.querySelectorAll('.ph').forEach(i=>i.src=PHOTO)}
-async function load(){const[w,l,s,cs]=await Promise.all([SB.from('words').select('*').order('created_at').limit(3000),SB.from('library').select('*').order('created_at',{ascending:false}),SB.from('site').select('*'),SB.from('certificates').select('*').order('created_at')]);
+async function load(force){const[w,l,s,cs]=await Promise.all([SB.from('words').select('*').order('created_at').limit(3000),SB.from('library').select('*').order('created_at',{ascending:false}),SB.from('site').select('*'),SB.from('certificates').select('*').order('created_at')]);
  err=w.error?w.error.message:'';certs=cs.data||[];words=w.data||[];lib=l.data||[];(s.data||[]).forEach(r=>{if(r.key=='info')info=r.value;if(r.key=='founder')founder=r.value});
  if(admin){const r=await SB.from('submissions').select('*').order('created_at');subs=r.data||[]}else subs=[];
- if(!typing())draw()}
+ if(force||!typing())draw()}
 function H(){const t=words.filter(w=>w.rohingya).length;return `<div class="hero"><h1>Preserving the Rohingya language, together.</h1><p>An open, community-built dictionary with Hanifi script and voice recordings, plus a library of history, stories and learning resources.</p><button class="b" style="background:#fff;color:#0f3d2b" onclick="go('dict')">Contribute a translation</button><button class="b" style="background:rgba(255,255,255,.18)" onclick="go('lib')">Explore the library</button></div>
 <div class="c" style="display:flex;gap:16px;align-items:center;margin-bottom:12px"><img class="ph" alt="Founder" style="width:84px;height:84px;border-radius:50%;object-fit:cover;border:3px solid var(--ac)"><div><span class="tag">Founder</span><h3>SUS-Al-Azizi</h3><div class="mu">Sana Ullah Sayeed Al Azizi</div><p style="margin:0">${E(founder||'Founder of this project to preserve and teach the Rohingya language and its history.')}</p><button class="b g" style="margin-top:8px" onclick="go('about')">About the founder</button></div></div>
 <div class="grid"><div class="c"><div class="n">${words.length}</div><div class="mu">Words and phrases</div></div><div class="c"><div class="n">${t}</div><div class="mu">Verified translations</div></div><div class="c"><div class="n">${words.filter(w=>w.audio_url).length}</div><div class="mu">Voice recordings</div></div></div>
@@ -128,7 +128,7 @@ function A(){if(!admin)return `<h2>Admin login</h2><div class="c"><input id="em"
 <div class="c" style="margin-top:16px"><h3>Add library item</h3><select id="lc">${CATS.map(c=>`<option>${c}</option>`).join('')}</select><input id="lt" placeholder="Title"><textarea id="lb" rows="3" placeholder="Text"></textarea><input id="ll" placeholder="Link (optional)"><button class="b" onclick="addL()">Publish</button></div>
 <div class="c" style="margin-top:12px"><h3>Add certificate</h3><input id="ct" placeholder="Title"><input id="ci" placeholder="Issued by (optional)"><input id="cy" placeholder="Year (optional)"><input id="cf" type="file" accept="image/*,.pdf"><p class="mu">Anything you upload is public. Avoid ID numbers or private details.</p><button class="b" onclick="addC()">Upload</button></div><div class="c" style="margin-top:12px"><h3>Founder message</h3><textarea id="fd" rows="3">${E(founder)}</textarea><button class="b" onclick="saveSite('founder','fd')">Save</button></div>
 <div class="c" style="margin-top:12px"><h3>Admissions &amp; info text</h3><textarea id="inf" rows="6">${E(info)}</textarea><button class="b" onclick="saveSite('info','inf')">Save</button></div>`}
-async function login(){const r=await SB.auth.signInWithPassword({email:$('em').value.trim(),password:$('pw').value});if(r.error){msg=r.error.message;draw()}}
+async function login(){const r=await SB.auth.signInWithPassword({email:$('em').value.trim(),password:$('pw').value});if(r.error){msg=r.error.message;draw()}else{if(document.activeElement)document.activeElement.blur();msg='';admin=true;await load(true)}}
 async function logout(){await SB.auth.signOut()}
 async function imp(f){if(!f)return;const m=$('im'),wb=XLSX.read(await f.arrayBuffer()),rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]).map(r=>({en:String(r.English||r.english||'').trim(),ur:String(r.Urdu||r.urdu||'').trim()})).filter(r=>r.en);
  for(let i=0;i<rows.length;i+=300){const x=await SB.from('words').insert(rows.slice(i,i+300));if(x.error){m.textContent='Error: '+x.error.message;return}m.textContent='Imported '+Math.min(i+300,rows.length)}alert('Imported '+rows.length+' entries');load()}
@@ -139,7 +139,7 @@ async function addL(){const g=i=>$(i).value.trim();if(!g('lt'))return;const x=aw
 async function delL(id){if(confirm('Delete this item?')){await SB.from('library').delete().eq('id',id);load()}}
 async function saveSite(k,i){const x=await SB.from('site').upsert({key:k,value:$(i).value});alert(x.error?x.error.message:'Saved');load()}
 function exp(){const d=words.filter(w=>w.rohingya).map(({id,created_at,...r})=>r),a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(d,null,1)],{type:'application/json'}));a.download='rohingya-dictionary.json';a.click()}
-SB.auth.onAuthStateChange((_e,s)=>{admin=!!s;load()});
+SB.auth.onAuthStateChange((e,s)=>{admin=!!s;load(e=='SIGNED_IN'||e=='SIGNED_OUT')});
 draw();
 function gtInit(){new google.translate.TranslateElement({pageLanguage:'en',includedLanguages:'en,ur,ar,bn,my',layout:google.translate.TranslateElement.InlineLayout.SIMPLE},'gt')}
 </script>
