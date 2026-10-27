@@ -3,6 +3,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>SUS-Al-Azizi | Rohingya Language Archive</title>
 <meta name="description" content="An open, community-built Rohingya (Hanifi script) dictionary with voice recordings, plus history, Arakan stories, education, research and admissions.">
+<link rel="canonical" href="https://sanaullahazizi.github.io/sus-al-azizi/">
+<meta name="theme-color" content="#1d6a4a">
+<meta property="og:type" content="website"><meta property="og:site_name" content="SUS-Al-Azizi">
+<meta property="og:title" content="SUS-Al-Azizi | Rohingya Language Archive"><meta property="og:description" content="An open, community-built Rohingya (Hanifi script) dictionary with voice recordings, plus history, Arakan stories, education, research and admissions.">
+<meta property="og:url" content="https://sanaullahazizi.github.io/sus-al-azizi/"><meta property="og:image" content="https://sanaullahazizi.github.io/sus-al-azizi/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="SUS-Al-Azizi | Rohingya Language Archive"><meta name="twitter:description" content="An open, community-built Rohingya (Hanifi script) dictionary with voice recordings, plus history, Arakan stories, education, research and admissions."><meta name="twitter:image" content="https://sanaullahazizi.github.io/sus-al-azizi/og.jpg">
+<link rel="icon" type="image/png" href="favicon.png"><link rel="apple-touch-icon" href="favicon.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","name":"SUS-Al-Azizi","alternateName":"Rohingya Language Archive","url":"https://sanaullahazizi.github.io/sus-al-azizi/","description":"An open, community-built Rohingya (Hanifi script) dictionary with voice recordings, plus history, Arakan stories, education, research and admissions.","inLanguage":"en"},{"@type":"Person","name":"Sana Ullah Sayeed Al Azizi","alternateName":"SUS-Al-Azizi","jobTitle":"Teacher and educator","url":"https://sanaullahazizi.github.io/sus-al-azizi/"}]}</script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Lora:wght@600;700&family=Noto+Sans+Hanifi+Rohingya&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#f7f6f2;--card:#fff;--tx:#1b2620;--mu:#66756d;--ac:#1d6a4a;--ac2:#e8f2ec;--bd:#e0ddd2;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -39,8 +47,8 @@ footer{max-width:900px;margin:20px auto;padding:20px 16px;color:var(--mu);font-s
 <div class="top"><div class="hd"><img class="ph" alt="Founder"><div class="nm">SUS-Al-Azizi</div><button class="hb" aria-label="Menu" onclick="openNav()">&#9776;</button></div></div>
 <div id="ov" onclick="closeNav()"></div>
 <nav id="nav"><div class="nh"><span>Menu</span><button onclick="closeNav()" aria-label="Close">&times;</button></div><div id="gt" class="notranslate"></div><div id="nv"></div><div id="ns"></div></nav>
-<main id="app"></main>
-<footer><div id="fs"></div>&copy; <span id="yr"></span> SUS-Al-Azizi &middot; Preserving the Rohingya language and Hanifi script</footer>
+<main id="app"><h1>SUS-Al-Azizi: Rohingya Language Archive</h1><p>An open, community-built Rohingya (Hanifi script) dictionary with voice recordings, plus history, Arakan stories, education, research and admissions. Founded by Sana Ullah Sayeed Al Azizi, a teacher and educator in Cox's Bazar, Bangladesh.</p><p>Sections: Dictionary, History, Arakan, Documentaries, Library, Education Plan, Research, Admissions and Information.</p><noscript><p>Please enable JavaScript to use this website.</p></noscript></main>
+<footer><div id="sh"></div><div id="fs"></div>&copy; <span id="yr"></span> SUS-Al-Azizi &middot; Preserving the Rohingya language and Hanifi script</footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
@@ -90,7 +98,7 @@ Arakanese kings took Persian-style titles and minted coins with Persian script, 
 Border tensions and resistance contributed to the First Anglo-Burmese War (1824-26). Under the Treaty of Yandabo in 1826, Burma gave Arakan to the British. Akyab (today Sittwe) grew into a major rice port and migration into the fertile lowlands increased. Arakan stayed under British administration, as part of Burma, until independence in 1948.`}];
 const BASE=[...NEWART,...BASE0.filter(x=>x.cat!='History')];
 const SB=supabase.createClient('https://pftyvvilojufmayxcdxy.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBmdHl2dmlsb2p1Zm1heXhjZHh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxNTI3NTksImV4cCI6MjEwNzcyODc1OX0.THWYfDi0oVcIHsWLYWPXceMxgUyEZnUQ9gFC5bkQB1U');
-let tab='home',admin=false,words=[],subs=[],lib=[],certs=[],progs=[],orgs=[],apps=[],about='',social={},seeded=false,q='',flt='all',rec=null,last=null,msg='',err='',ed={};
+let shown=30,tab='home',admin=false,words=[],subs=[],lib=[],certs=[],progs=[],orgs=[],apps=[],about='',social={},seeded=false,q='',flt='all',rec=null,last=null,msg='',err='',ed={};
 const E=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const $=i=>document.getElementById(i);
 const typing=()=>/INPUT|TEXTAREA|SELECT/.test((document.activeElement||{}).tagName||'');
@@ -103,13 +111,17 @@ const EN={lib:{t:'library',f:[['title','Title'],['author','Author (optional)'],[
  org:{t:'orgs',f:[['name','Institution name'],['role','Your role (optional)'],['body','About the institution','ta'],['location','Location'],['contact','Contact'],['website','Website (https://...)']]},
  cert:{t:'certificates',f:[['title','Title'],['issuer','Issued by'],['year','Year'],['file','Image or PDF']]}};
 const DATA={lib:()=>lib,prog:()=>progs,org:()=>orgs,cert:()=>certs};
-function go(t){tab=t;closeNav();msg='';draw();scrollTo(0,0)}
+const SITE='https://sanaullahazizi.github.io/sus-al-azizi/';
+function go(t){if(location.hash=='#'+t){route()}else location.hash=t}
+function route(){const t=location.hash.slice(1);tab=PAGES[t]?t:'home';closeNav();msg='';draw();scrollTo(0,0);const l=(TABS.find(x=>x[0]==tab)||[])[1];document.title=(tab=='home'||!l)?'SUS-Al-Azizi | Rohingya Language Archive':l+' | SUS-Al-Azizi'}
+addEventListener('hashchange',route);
+function SHARE(){const u=encodeURIComponent(SITE+(tab=='home'?'':'#'+tab)),t=encodeURIComponent('SUS-Al-Azizi: Rohingya Language Archive');return `<div class="so"><a href="https://wa.me/?text=${t}%20${u}" target="_blank" rel="noopener">Share on WhatsApp</a><a href="https://www.facebook.com/sharer/sharer.php?u=${u}" target="_blank" rel="noopener">Facebook</a><a href="https://t.me/share/url?url=${u}&text=${t}" target="_blank" rel="noopener">Telegram</a></div>`}
 function openNav(){$('nav').classList.add('open');$('ov').classList.add('open')}
 function closeNav(){$('nav').classList.remove('open');$('ov').classList.remove('open')}
 const SO=()=>{const l=SOC.filter(x=>/^https?:/.test(social[x[0]]||''));return l.length?'<div class="so">'+l.map(x=>`<a href="${E(social[x[0]])}" target="_blank" rel="noopener noreferrer">${x[1]}</a>`).join('')+'</div>':''};
 const PAGES={home:H,about:Ab,dict:D,history:()=>SEC('History'),arakan:()=>SEC('Arakan Stories'),docs:()=>SEC('Documentaries'),lib:()=>SEC('Books'),edu:()=>SEC('Education')+S(),res:()=>SEC('Research'),adm:Adm,info:Inf,admin:A};
 function draw(){$('nv').innerHTML=TABS.map(t=>`<button class="${tab==t[0]?'on':''}" onclick="go('${t[0]}')">${t[1]}</button>`).join('');
- $('ns').innerHTML=SO();$('fs').innerHTML=SO();$('yr').textContent=new Date().getFullYear();
+ $('ns').innerHTML=SO();$('sh').innerHTML=SHARE();$('fs').innerHTML=SO();$('yr').textContent=new Date().getFullYear();
  $('app').innerHTML=(PAGES[tab]||H)();document.querySelectorAll('.ph').forEach(i=>i.src=PHOTO)}
 async function load(force){const t=n=>SB.from(n).select('*').order('created_at');
  const[w,l,s,c,p,o]=await Promise.all([t('words').limit(3000),SB.from('library').select('*').order('created_at',{ascending:false}),SB.from('site').select('*'),t('certificates'),t('programs'),t('orgs')]);
@@ -145,11 +157,11 @@ async function saveSite(k,i){const x=await SB.from('site').upsert({key:k,value:$
 async function resetAbout(){if(confirm('Restore the default biography?')){await SB.from('site').delete().eq('key','about');about='';load(true)}}
 function S(){return `<h2 style="margin-top:24px">Learn Hanifi Rohingya</h2><p>Hanifi Rohingya is the writing system created for the Rohingya language. It is written right to left.</p><div class="c">${HAN.map(h=>`<p><b>${h[0]}:</b> ${h[1]}</p>`).join('')}</div>`}
 function D(){const f=words.filter(w=>(flt=='all'||(flt=='todo'?!w.rohingya:!!w.rohingya))&&(!q||((w.en||'')+' '+(w.ur||'')+' '+(w.rohingya||'')).toLowerCase().includes(q.toLowerCase())));
- return `<h2>Dictionary</h2>${err?`<div class="c">Could not load the dictionary: ${E(err)}</div>`:''}${admin?DADM():''}<div class="row"><input id="q" placeholder="Search English, Urdu or Rohingya" value="${E(q)}" oninput="q=this.value;clearTimeout(window.tm);window.tm=setTimeout(()=>{draw();$('q').focus()},350)"><select onchange="flt=this.value;draw()"><option value="all" ${flt=='all'?'selected':''}>All entries</option><option value="todo" ${flt=='todo'?'selected':''}>Needs translation</option><option value="done" ${flt=='done'?'selected':''}>Translated</option></select></div><p class="mu">${f.length} entries${f.length>30?' (showing 30)':''}</p>`+
- (f.slice(0,30).map(w=>`<div class="c" style="margin-bottom:10px"><div class="w notranslate">${E(w.en)}</div><div class="mu notranslate" dir="auto">${E(w.ur)}</div>${w.rohingya?`<div class="hf notranslate">${E(w.rohingya)}</div>${w.audio_url?`<audio controls preload="none" style="width:100%" src="${E(w.audio_url)}"></audio>`:''}`:''}
+ return `<h2>Dictionary</h2>${err?`<div class="c">Could not load the dictionary: ${E(err)}</div>`:''}${admin?DADM():''}<div class="row"><input id="q" placeholder="Search English, Urdu or Rohingya" value="${E(q)}" oninput="q=this.value;shown=30;clearTimeout(window.tm);window.tm=setTimeout(()=>{draw();$('q').focus()},350)"><select onchange="flt=this.value;shown=30;draw()"><option value="all" ${flt=='all'?'selected':''}>All entries</option><option value="todo" ${flt=='todo'?'selected':''}>Needs translation</option><option value="done" ${flt=='done'?'selected':''}>Translated</option></select></div><p class="mu">${f.length} entries${f.length>shown?' (showing '+shown+')':''}</p>`+
+ (f.slice(0,shown).map(w=>`<div class="c" style="margin-bottom:10px"><div class="w notranslate">${E(w.en)}</div><div class="mu notranslate" dir="auto">${E(w.ur)}</div>${w.rohingya?`<div class="hf notranslate">${E(w.rohingya)}</div>${w.audio_url?`<audio controls preload="none" style="width:100%" src="${E(w.audio_url)}"></audio>`:''}`:''}
  <details><summary class="mu">${w.rohingya?'Suggest a correction':'Add translation'}</summary><textarea class="hf" id="r_${w.id}" rows="1" placeholder="Type in Hanifi script"></textarea><input id="n_${w.id}" placeholder="Your name (optional)">
  <button class="b g" id="m_${w.id}" onclick="mic('${w.id}')">Record voice</button><button class="b" onclick="send('${w.id}')">Submit</button> <span class="mu" id="s_${w.id}"></span><p class="mu" style="margin:6px 0 0">By submitting you agree that your contribution may be reviewed and published as open data.</p></details>
- ${admin?`<details><summary class="mu">Admin: edit or delete</summary><input id="we_${w.id}_en" value="${E(w.en)}" placeholder="English"><input id="we_${w.id}_ur" value="${E(w.ur)}" placeholder="Urdu"><textarea class="hf" id="we_${w.id}_ro" rows="1" placeholder="Rohingya">${E(w.rohingya||'')}</textarea><button class="b" onclick="saveW('${w.id}')">Save</button><button class="b r" onclick="delW('${w.id}')">Delete word</button></details>`:''}</div>`).join('')||'<div class="c">No entries found.</div>')}
+ ${admin?`<details><summary class="mu">Admin: edit or delete</summary><input id="we_${w.id}_en" value="${E(w.en)}" placeholder="English"><input id="we_${w.id}_ur" value="${E(w.ur)}" placeholder="Urdu"><textarea class="hf" id="we_${w.id}_ro" rows="1" placeholder="Rohingya">${E(w.rohingya||'')}</textarea><button class="b" onclick="saveW('${w.id}')">Save</button><button class="b r" onclick="delW('${w.id}')">Delete word</button></details>`:''}</div>`).join('')||'<div class="c">No entries found.</div>')+(f.length>shown?'<div style="text-align:center"><button class="b" onclick="shown+=30;draw()">Show more ('+(f.length-shown)+' left)</button></div>':'')}
 function DADM(){return `<details class="c"><summary><b>Admin: import words from Excel</b></summary><p class="mu">Excel or CSV with columns: English, Urdu</p><input type="file" accept=".xlsx,.csv" onchange="imp(this.files[0])"><div id="im" class="mu"></div></details>
 <details class="c" ${subs.length?'open':''}><summary><b>Pending submissions (${subs.length})</b></summary>${subs.map(s=>{const w=words.find(x=>x.id==s.word_id)||{};return `<div style="border-top:1px solid var(--bd);padding:8px 0"><div class="w notranslate">${E(w.en)} <span class="mu">${E(w.ur)}</span></div><div class="hf notranslate">${E(s.text)}</div>${s.audio_url?`<audio controls preload="none" style="width:100%" src="${E(s.audio_url)}"></audio>`:''}<div class="mu">By ${E(s.by_name||'Anonymous')}</div><button class="b" onclick="ok('${s.id}')">Approve</button><button class="b r" onclick="rej('${s.id}')">Reject</button></div>`}).join('')||'<p class="mu">Nothing to review.</p>'}</details>`}
 async function saveW(id){const x=await SB.from('words').update({en:$(`we_${id}_en`).value.trim(),ur:$(`we_${id}_ur`).value.trim(),rohingya:$(`we_${id}_ro`).value.trim()||null}).eq('id',id);if(x.error)alert(x.error.message);else load(true)}
@@ -188,7 +200,7 @@ function exp(){dl('rohingya-dictionary.json',JSON.stringify(words.filter(w=>w.ro
 async function login(){const r=await SB.auth.signInWithPassword({email:$('em').value.trim(),password:$('pw').value});if(r.error){msg=r.error.message;draw()}else{if(document.activeElement)document.activeElement.blur();msg='';admin=true;await load(true)}}
 async function logout(){await SB.auth.signOut()}
 SB.auth.onAuthStateChange((e,s)=>{admin=!!s;load(e=='SIGNED_IN'||e=='SIGNED_OUT')});
-draw();
+route();
 function gtInit(){new google.translate.TranslateElement({pageLanguage:'en',includedLanguages:'en,ur,ar,bn,my,tr',layout:google.translate.TranslateElement.InlineLayout.SIMPLE},'gt')}
 </script>
 <script src="https://translate.google.com/translate_a/element.js?cb=gtInit"></script></body></html>
