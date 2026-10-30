@@ -97,7 +97,7 @@ Arakanese kings took Persian-style titles and minted coins with Persian script, 
 
 Border tensions and resistance contributed to the First Anglo-Burmese War (1824-26). Under the Treaty of Yandabo in 1826, Burma gave Arakan to the British. Akyab (today Sittwe) grew into a major rice port and migration into the fertile lowlands increased. Arakan stayed under British administration, as part of Burma, until independence in 1948.`}];
 const BASE=[...NEWART,...BASE0.filter(x=>x.cat!='History')];
-const SB=supabase.createClient('https://pftyvvilojufmayxcdxy.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBmdHl2dmlsb2p1Zm1heXhjZHh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxNTI3NTksImV4cCI6MjEwNzcyODc1OX0.THWYfDi0oVcIHsWLYWPXceMxgUyEZnUQ9gFC5bkQB1U');
+const SBU='https://pftyvvilojufmayxcdxy.supabase.co',SBK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBmdHl2dmlsb2p1Zm1heXhjZHh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxNTI3NTksImV4cCI6MjEwNzcyODc1OX0.THWYfDi0oVcIHsWLYWPXceMxgUyEZnUQ9gFC5bkQB1U';const SB=supabase.createClient(SBU,SBK);
 let shown=30,tab='home',admin=false,words=[],subs=[],lib=[],certs=[],progs=[],orgs=[],apps=[],about='',social={},seeded=false,q='',flt='all',rec=null,last=null,msg='',err='',ed={};
 const E=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const $=i=>document.getElementById(i);
@@ -133,14 +133,33 @@ const ADM=(k,x)=>admin&&x.id?`<div style="margin-top:8px"><button class="b g" on
 function BD(t){const p=String(t||'').split(/\n\n+/);return `<p>${E(p[0])}</p>`+(p.length>1?`<details><summary>Read the full story</summary>${p.slice(1).map(x=>`<p>${E(x)}</p>`).join('')}</details>`:'')}
 const CARD=x=>`<div class="c"><span class="tag">${E(TITLE[x.cat]||x.cat||'')}</span><h3>${E(x.title)}</h3>${x.author?`<div class="mu">${E(x.author)}</div>`:''}${BD(x.body)}${x.file_url?`<a class="b" href="${E(x.file_url)}" target="_blank" rel="noopener">Open or download PDF</a>`:''}${/^https?:/.test(x.link||'')?` <a href="${E(x.link)}" target="_blank" rel="noopener">Open link</a>`:''}${ADM('lib',x)}</div>`;
 function FORM(k,cat){const c=EN[k],id=ed[k],cur=id?(DATA[k]().find(x=>x.id==id)||{}):{};
- return `<details class="c" ${id?'open':''}><summary><b>${id?'Edit item':'+ Add new'}</b></summary>${c.f.map(([n,l,ty])=>n=='file'?`<label class="mu">${l}</label><input type="file" id="f_${k}_file" accept="${k=='cert'?'image/*,.pdf':'.pdf'}">${cur.file_url?'<div class="mu">A file is attached. Choose a new one to replace it.</div>':''}`:ty=='ta'?`<textarea id="f_${k}_${n}" rows="5" placeholder="${l}">${E(cur[n]||'')}</textarea>`:`<input id="f_${k}_${n}" placeholder="${l}" value="${E(cur[n]||'')}">`).join('')}<button class="b" onclick="save('${k}','${E(cat||'')}')">Save</button>${id?`<button class="b g" onclick="ed['${k}']=null;draw()">Cancel</button>`:''}<p class="mu">Separate paragraphs with a blank line.</p></details>`}
+ return `<details class="c" ${id?'open':''}><summary><b>${id?'Edit item':'+ Add new'}</b></summary>${c.f.map(([n,l,ty])=>n=='file'?`<label class="mu">${l}</label><input type="file" id="f_${k}_file" accept="${k=='cert'?'image/*,.pdf':'.pdf'}">${cur.file_url?'<div class="mu">A file is attached. Choose a new one to replace it.</div>':''}`:ty=='ta'?`<textarea id="f_${k}_${n}" rows="5" placeholder="${l}">${E(cur[n]||'')}</textarea>`:`<input id="f_${k}_${n}" placeholder="${l}" value="${E(cur[n]||'')}">`).join('')}<button class="b" id="sv_${k}" onclick="save('${k}','${E(cat||'')}')">Save</button> <span class="mu" id="st_${k}"></span>${id?`<button class="b g" onclick="ed['${k}']=null;draw()">Cancel</button>`:''}<p class="mu">Separate paragraphs with a blank line.</p></details>`}
 function edit(k,id){ed[k]=id;draw();setTimeout(()=>{const d=document.querySelector('details[open].c');if(d)d.scrollIntoView({block:'start'})},60)}
+const LIM={lib:25,cert:10};
+function setSt(k,t){const e=$('st_'+k);if(e)e.textContent=t}
+function emsg(e){let t=(e&&e.message)||String(e);try{const j=JSON.parse(t);t=j.message||j.error||t}catch(x){}return t}
+function upl(bucket,fn,file,cb){return new Promise(async(res,rej)=>{const{data}=await SB.auth.getSession();const tok=(data.session&&data.session.access_token)||SBK,x=new XMLHttpRequest();
+ x.open('POST',SBU+'/storage/v1/object/'+bucket+'/'+fn);x.setRequestHeader('Authorization','Bearer '+tok);x.setRequestHeader('apikey',SBK);x.setRequestHeader('Content-Type',file.type||'application/octet-stream');x.setRequestHeader('x-upsert','false');
+ x.upload.onprogress=e=>{if(e.lengthComputable)cb(Math.round(e.loaded/e.total*100))};
+ x.onload=()=>x.status<300?res():rej(new Error(x.responseText||('Error '+x.status)));
+ x.onerror=()=>rej(new Error('Network error. Check your connection and try again.'));x.send(file)})}
 async function save(k,cat){const c=EN[k],row={};for(const[n]of c.f){if(n!='file')row[n]=$(`f_${k}_${n}`).value.trim()}
- if(!row[c.f[0][0]]){alert('Please fill in the first field.');return}
+ if(!row[c.f[0][0]]){setSt(k,'Please fill in the first field.');return}
  if(cat)row.cat=cat;
- const fe=$(`f_${k}_file`);if(fe&&fe.files[0]){const f=fe.files[0],b=k=='cert'?'certs':'files',fn=Date.now()+'-'+f.name.replace(/[^a-zA-Z0-9._-]/g,'_'),u=await SB.storage.from(b).upload(fn,f,{contentType:f.type});if(u.error){alert(u.error.message);return}row.file_url=SB.storage.from(b).getPublicUrl(fn).data.publicUrl}
- const id=ed[k],r=id?await SB.from(c.t).update(row).eq('id',id):await SB.from(c.t).insert(row);
- if(r.error){alert(r.error.message);return}ed[k]=null;await load(true)}
+ const btn=document.querySelector(`#sv_${k}`);if(btn)btn.disabled=true;
+ const fe=$(`f_${k}_file`);
+ try{
+  if(fe&&fe.files[0]){const f=fe.files[0],mb=f.size/1048576,lim=LIM[k]||25;
+   if(mb>lim){setSt(k,`This file is ${mb.toFixed(1)} MB. The limit is ${lim} MB. Please compress it first.`);if(btn)btn.disabled=false;return}
+   const b=k=='cert'?'certs':'files',fn=Date.now()+'-'+f.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+   setSt(k,'Uploading 0%... please wait');
+   await upl(b,fn,f,p=>setSt(k,'Uploading '+p+'%... please wait'));
+   row.file_url=SB.storage.from(b).getPublicUrl(fn).data.publicUrl}
+  setSt(k,'Saving...');
+  const id=ed[k],r=id?await SB.from(c.t).update(row).eq('id',id):await SB.from(c.t).insert(row);
+  if(r.error)throw r.error;
+  setSt(k,'Saved.');ed[k]=null;await load(true)
+ }catch(e){setSt(k,'Failed: '+emsg(e));if(btn)btn.disabled=false}}
 async function del(k,id){if(confirm('Delete this item?')){const r=await SB.from(EN[k].t).delete().eq('id',id);if(r.error)alert(r.error.message);load(true)}}
 function SEC(c){const f=(seeded?lib:[...BASE.map(x=>({cat:x.cat,title:x.t,body:x.b})),...lib]).filter(x=>x.cat==c);
  return `<h2>${TITLE[c]}</h2><p class="mu">${INTRO[c]}</p>${admin?FORM('lib',c):''}${admin&&!seeded?'<div class="c"><b>Starter articles are built in.</b> Import them once so you can edit or delete them.<br><button class="b" onclick="seed()">Import starter articles</button></div>':''}<div class="grid">${f.map(CARD).join('')||'<div class="c mu">Nothing here yet.</div>'}</div>`}
