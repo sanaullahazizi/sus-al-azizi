@@ -98,7 +98,7 @@ Arakanese kings took Persian-style titles and minted coins with Persian script, 
 Border tensions and resistance contributed to the First Anglo-Burmese War (1824-26). Under the Treaty of Yandabo in 1826, Burma gave Arakan to the British. Akyab (today Sittwe) grew into a major rice port and migration into the fertile lowlands increased. Arakan stayed under British administration, as part of Burma, until independence in 1948.`}];
 const BASE=[...NEWART,...BASE0.filter(x=>x.cat!='History')];
 const SBU='https://pftyvvilojufmayxcdxy.supabase.co',SBK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBmdHl2dmlsb2p1Zm1heXhjZHh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIxNTI3NTksImV4cCI6MjEwNzcyODc1OX0.THWYfDi0oVcIHsWLYWPXceMxgUyEZnUQ9gFC5bkQB1U';const SB=supabase.createClient(SBU,SBK);
-let shown=30,tab='home',admin=false,words=[],subs=[],lib=[],certs=[],progs=[],orgs=[],apps=[],about='',social={},seeded=false,q='',flt='all',rec=null,last=null,msg='',err='',ed={};
+let dirty=false,shown=30,tab='home',admin=false,words=[],subs=[],lib=[],certs=[],progs=[],orgs=[],apps=[],about='',social={},seeded=false,q='',flt='all',rec=null,last=null,msg='',err='',ed={};
 const E=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const $=i=>document.getElementById(i);
 const typing=()=>/INPUT|TEXTAREA|SELECT/.test((document.activeElement||{}).tagName||'');
@@ -120,7 +120,8 @@ function openNav(){$('nav').classList.add('open');$('ov').classList.add('open')}
 function closeNav(){$('nav').classList.remove('open');$('ov').classList.remove('open')}
 const SO=()=>{const l=SOC.filter(x=>/^https?:/.test(social[x[0]]||''));return l.length?'<div class="so">'+l.map(x=>`<a href="${E(social[x[0]])}" target="_blank" rel="noopener noreferrer">${x[1]}</a>`).join('')+'</div>':''};
 const PAGES={home:H,about:Ab,dict:D,history:()=>SEC('History'),arakan:()=>SEC('Arakan Stories'),docs:()=>SEC('Documentaries'),lib:()=>SEC('Books'),edu:()=>SEC('Education')+S(),res:()=>SEC('Research'),adm:Adm,info:Inf,admin:A};
-function draw(){$('nv').innerHTML=TABS.map(t=>`<button class="${tab==t[0]?'on':''}" onclick="go('${t[0]}')">${t[1]}</button>`).join('');
+addEventListener('input',()=>{dirty=true},true);addEventListener('change',()=>{dirty=true},true);
+function draw(){dirty=false;$('nv').innerHTML=TABS.map(t=>`<button class="${tab==t[0]?'on':''}" onclick="go('${t[0]}')">${t[1]}</button>`).join('');
  $('ns').innerHTML=SO();$('sh').innerHTML=SHARE();$('fs').innerHTML=SO();$('yr').textContent=new Date().getFullYear();
  $('app').innerHTML=(PAGES[tab]||H)();document.querySelectorAll('.ph').forEach(i=>i.src=PHOTO)}
 async function load(force){const t=n=>SB.from(n).select('*').order('created_at');
@@ -128,7 +129,7 @@ async function load(force){const t=n=>SB.from(n).select('*').order('created_at')
  err=w.error?w.error.message:'';words=w.data||[];lib=l.data||[];certs=c.data||[];progs=p.data||[];orgs=o.data||[];
  (s.data||[]).forEach(r=>{if(r.key=='about')about=r.value;if(r.key=='seeded')seeded=r.value=='1';if(r.key=='social'){try{social=JSON.parse(r.value)||{}}catch(e){}}});
  if(admin){const[a,b]=await Promise.all([t('submissions'),t('applications')]);subs=a.data||[];apps=b.data||[]}else{subs=[];apps=[]}
- if(force||!typing())draw()}
+ if(force||(!typing()&&!dirty))draw()}
 const ADM=(k,x)=>admin&&x.id?`<div style="margin-top:8px"><button class="b g" onclick="edit('${k}','${x.id}')">Edit</button><button class="b r" onclick="del('${k}','${x.id}')">Delete</button></div>`:'';
 function BD(t){const p=String(t||'').split(/\n\n+/);return `<p>${E(p[0])}</p>`+(p.length>1?`<details><summary>Read the full story</summary>${p.slice(1).map(x=>`<p>${E(x)}</p>`).join('')}</details>`:'')}
 const CARD=x=>`<div class="c"><span class="tag">${E(TITLE[x.cat]||x.cat||'')}</span><h3>${E(x.title)}</h3>${x.author?`<div class="mu">${E(x.author)}</div>`:''}${BD(x.body)}${x.file_url?`<a class="b" href="${E(x.file_url)}" target="_blank" rel="noopener">Open or download PDF</a>`:''}${/^https?:/.test(x.link||'')?` <a href="${E(x.link)}" target="_blank" rel="noopener">Open link</a>`:''}${ADM('lib',x)}</div>`;
@@ -218,7 +219,7 @@ async function saveSoc(){const o={};SOC.forEach(([k])=>o[k]=$('s_'+k).value.trim
 function exp(){dl('rohingya-dictionary.json',JSON.stringify(words.filter(w=>w.rohingya).map(({id,created_at,...r})=>r),null,1),'application/json')}
 async function login(){const r=await SB.auth.signInWithPassword({email:$('em').value.trim(),password:$('pw').value});if(r.error){msg=r.error.message;draw()}else{if(document.activeElement)document.activeElement.blur();msg='';admin=true;await load(true)}}
 async function logout(){await SB.auth.signOut()}
-SB.auth.onAuthStateChange((e,s)=>{admin=!!s;load(e=='SIGNED_IN'||e=='SIGNED_OUT')});
+SB.auth.onAuthStateChange((e,s)=>{const a=!!s,ch=a!==admin;admin=a;load(ch)});
 route();
 function gtInit(){new google.translate.TranslateElement({pageLanguage:'en',includedLanguages:'en,ur,ar,bn,my,tr',layout:google.translate.TranslateElement.InlineLayout.SIMPLE},'gt')}
 </script>
